@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wycena Okna - ALUKO SC</title>
+    <link rel="stylesheet" href="/static/css/style-wycena.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Wycena okna - ALUKO SC</h1>
+
+        <form id="wycenaForm">
+            <div class="form-group">
+                <label for="typ">Typ okna:</label>
+                <select id="typ" name="typ">
+                    <option value="HS">HS</option>
+                <option value="HS 2 Skrzydla">HS 2 Skrzydla</option>
+                <option value="Okno 1 polowe">Okno 1 polowe</option>
+                <option value="Okno 1 polowe ukryte">Okno 1 polowe ukryte</option>
+                <option value="Okno 2 polowe 2RU">Okno 2 polowe 2RU</option>
+                <option value="Okno 2 polowe ukryte 2RU">Okno 2 polowe ukryte 2RU</option>
+                <option value="Okno 2 polowe ukryte z fix
+                ">Okno 2 polowe ukryte z fix
+            </option>
+                <option value="Okno 2 polowe z fix">Okno 2 polowe z fix</option>
+                <option value="Pola stałe">Pola stałe</option>
+                </select>
+                <img id="oknoPreview" src="/static/img/HS.png" alt="Podgląd okna" class="preview-img">
+            </div>
+
+            <label for="szerokosc">Szerokość (mm):</label>
+            <input type="number" id="szerokosc" name="szerokosc" required>
+
+            <label for="wysokosc">Wysokość (mm):</label>
+            <input type="number" id="wysokosc" name="wysokosc" required>
+
+            <label for="ilosc">Ilość:</label>
+            <input type="number" id="ilosc" name="ilosc" value="1" required>
+
+            <button type="button" id="dodajBtn">Dodaj do zestawienia</button>
+        </form>
+
+        <h2>Zestawienie wycenionych okien:</h2>
+        <table id="zestawienie">
+            <thead>
+                <tr>
+                    <th>Typ</th>
+                    <th>Szerokość</th>
+                    <th>Wysokość</th>
+                    <th>Ilość</th>
+                    <th>Cena jedn. (zł)</th>
+                    <th>Cena łączna (zł)</th>
+                    <th>Zdjęcie</th>
+                    <th>Usuń</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Wiersze dodawane dynamicznie -->
+            </tbody>
+        </table>
+        <div id="sumaWyceny">SUMA: 0.00 zł</div>
+    </div>
+
+    <script src="/static/js/script-wycena.js"></script>
+</body>
+</html>
