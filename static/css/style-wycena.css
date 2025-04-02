@@ -69,7 +69,7 @@ button:hover {
 }
 
 #zestawienie th {
-    background-color: #f1f1f1;
+    background-color: #bfbfbf;
     font-weight: bold;
     text-transform: uppercase;
 }
@@ -80,4 +80,38 @@ button:hover {
     font-size: 18px;
     font-weight: bold;
     color: #333;
+}
+.preview-and-options {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+#oknoPreview {
+    height: 160px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    object-fit: contain;
+}
+
+.dodatki-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 15px;
+}
+.dodatki-box label {
+    display: grid;
+    grid-template-columns: 24px auto;
+    align-items: center;
+    column-gap: 12px;
+    padding: 4px 0;
+  }
+  
+  .dodatek-text {
+    font-size: 15px;
+  }
+.dodatki-box input[type="checkbox"] {
+    transform: scale(0.9);
 }

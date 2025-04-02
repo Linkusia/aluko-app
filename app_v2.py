@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from fpdf import FPDF
 from datetime import datetime
 import smtplib
@@ -65,9 +65,21 @@ def get_price_from_sheet_ceil(file_path, sheet_name, width, height):
     row = df[df.iloc[:, 2] == chosen_height]
     price = row[column_name].values[0]
     return None if pd.isna(price) else float(price)
+# === Checkboxy ===
+@app.route("/get-options", methods=["POST"])
+def get_options():
+    data = request.get_json()
+    typ = data.get("typ")
+
+    try:
+        df = pd.read_excel(EXCEL_PATH, sheet_name=typ, engine="openpyxl", usecols="A:B", skiprows=29, nrows=4)
+        df.columns = ["nazwa", "cena"]
+        dodatki = df.to_dict(orient="records")
+        return jsonify(dodatki)
+    except Exception as e:
+        print("Błąd dodatków:", e)
+        return jsonify({"error": "Błąd przy pobieraniu dodatków"}), 500
 
 # === URUCHOM LOKALNIE ===
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)

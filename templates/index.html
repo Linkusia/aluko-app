@@ -21,13 +21,16 @@
                 <option value="Okno 1 polowe ukryte">Okno 1 polowe ukryte</option>
                 <option value="Okno 2 polowe 2RU">Okno 2 polowe 2RU</option>
                 <option value="Okno 2 polowe ukryte 2RU">Okno 2 polowe ukryte 2RU</option>
-                <option value="Okno 2 polowe ukryte z fix
-                ">Okno 2 polowe ukryte z fix
-            </option>
+                <option value="Okno 2 polowe ukryte z fix">Okno 2 polowe ukryte z fix</option>
                 <option value="Okno 2 polowe z fix">Okno 2 polowe z fix</option>
                 <option value="Pola stałe">Pola stałe</option>
                 </select>
-                <img id="oknoPreview" src="/static/img/HS.png" alt="Podgląd okna" class="preview-img">
+                <div class="preview-and-options">
+                    <img id="oknoPreview" src="" alt="Podgląd okna">
+                    <div class="dodatki-box" id="dodatkiBox">
+                      <!-- Dodatki będą ładowane dynamicznie przez JS -->
+                    </div>
+                  </div>
             </div>
 
             <label for="szerokosc">Szerokość (mm):</label>
@@ -46,9 +49,10 @@
         <table id="zestawienie">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Typ</th>
-                    <th>Szerokość</th>
-                    <th>Wysokość</th>
+                    <th>Szerokość [mm]</th>
+                    <th>Wysokość [mm]</th>
                     <th>Ilość</th>
                     <th>Cena jedn. (zł)</th>
                     <th>Cena łączna (zł)</th>
