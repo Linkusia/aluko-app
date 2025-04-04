@@ -115,3 +115,35 @@ button:hover {
 .dodatki-box input[type="checkbox"] {
     transform: scale(0.9);
 }
+#sumaWyceny strong {
+    font-size: 18px;
+    color: #007bff;
+}
+  
+  #komunikat {
+    opacity: 1;
+    transition: opacity 1s ease;
+    pointer-events: auto;
+  }
+  
+  .komunikat-błąd {
+    background-color: #ffe5e5;
+    color: #3800b2;
+    border: 1px solid #3800b2;
+    padding: 10px 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+  }
+  
+  .komunikat-ukryty {
+    opacity: 0;
+    pointer-events: none;
+  }
+  tr[data-grupa] td {
+    background-color: inherit !important;
+  }

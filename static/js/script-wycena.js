@@ -7,6 +7,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let suma = 0;
     let grupaCounter = 0;
+    function pokazKomunikat(tresc, typ = "błąd") {
+        const div = document.getElementById("komunikat");
+        div.className = ""; // Reset klas
+        div.innerText = tresc;
+      
+        if (typ === "błąd") {
+          div.classList.add("komunikat-błąd");
+        }
+      
+        // Pokaż
+        div.classList.remove("komunikat-ukryty");
+      
+        // Schowaj po 5 sekundach
+        setTimeout(() => {
+            div.classList.add("komunikat-ukryty");
+        
+            // Po dodatkowych 0.5 sek – czyszczenie tekstu (gdy animacja się skończy)
+            setTimeout(() => {
+              div.innerText = "";
+              div.className = "komunikat-ukryty";
+            }, 1000);
+          }, 5000);
+        }
+    function aktualizujSume() {
+        const vat = suma * 0.23;
+        const sumaZVat = suma + vat;
+
+        sumaDiv.innerHTML = `
+            <div>Netto: ${suma.toFixed(2)} zł</div>
+            <div>VAT 23%: ${vat.toFixed(2)} zł</div>
+            <div><strong>Brutto: ${sumaZVat.toFixed(2)} zł</strong></div>
+        `;
+    }
 
     function przeliczNumeracje() {
         const wiersze = document.querySelectorAll(".okno-wiersz");
@@ -30,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (!response.ok) {
-            dodatkiBox.innerHTML = "Brak dodatków lub błąd.";
+            dodatkiBox.innerHTML = "Brak dodatków dla pola stałego.";
             return;
         }
 
@@ -39,8 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
         dodatki.forEach(d => {
             const label = document.createElement("label");
             label.innerHTML = `
-            <input type="checkbox" class="dodatek" data-cena="${d.cena}" value="${d.nazwa}">
-            <span class="dodatek-text">${d.nazwa} (${d.cena} zł)</span>
+                <input type="checkbox" class="dodatek" data-cena="${d.cena}" value="${d.nazwa}">
+                <span class="dodatek-text">${d.nazwa} (${d.cena} zł)</span>
             `;
             dodatkiBox.appendChild(label);
         });
@@ -65,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!response.ok) {
             const error = await response.text();
-            alert(error);
+            pokazKomunikat(error, "błąd");
             return;
         }
 
@@ -102,17 +135,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const dodatkiZaznaczone = document.querySelectorAll(".dodatek:checked");
 
         dodatkiZaznaczone.forEach(d => {
-            const cenaDodatekTotal = parseFloat(d.dataset.cena) * ilosc;
+            const cenaJedn = parseFloat(d.dataset.cena);
+            const cenaDodatekTotal = cenaJedn * ilosc;
+          
             const dodatekTr = document.createElement("tr");
             dodatekTr.innerHTML = `
-                <td colspan="4">➕ ${d.value} × ${ilosc}</td>
-                <td colspan="2">${cenaDodatekTotal.toFixed(2)}</td>
+                <td></td> <!-- pusta kolumna na numer -->
+                <td>➕ ${d.value}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>${ilosc}</td>
+                <td>${cenaJedn.toFixed(2)}</td>
+                <td>${cenaDodatekTotal.toFixed(2)}</td>
                 <td colspan="2">Dodatek</td>
             `;
+          
             dodatekTr.style.backgroundColor = kolorTla;
             dodatekTr.dataset.grupa = grupaId;
             tabelaBody.appendChild(dodatekTr);
-
+          
             suma += cenaDodatekTotal;
         });
 
@@ -126,9 +167,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             suma -= sumaDoOdjecia;
             rows.forEach(row => row.remove());
-            sumaDiv.innerText = `SUMA: ${suma.toFixed(2)} zł`;
+            aktualizujSume();
             przeliczNumeracje();
-            // Przelicz kolory wierszy na nowo
+
             const pozostaleWiersze = document.querySelectorAll(".okno-wiersz");
             pozostaleWiersze.forEach((tr, index) => {
                 const kolor = index % 2 === 0 ? "#ffffff" : "#bfbfbf";
@@ -139,7 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        sumaDiv.innerText = `SUMA: ${suma.toFixed(2)} zł`;
+        aktualizujSume();
     });
+
     typSelect.dispatchEvent(new Event("change"));
 });
+

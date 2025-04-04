@@ -38,18 +38,30 @@ def get_price():
     wysokosc = int(data.get("wysokosc"))
 
     cena = get_price_from_sheet_ceil(EXCEL_PATH, typ, szerokosc, wysokosc)
+
+    if isinstance(cena, str):
+        return cena, 400  # komunikat błędu (np. "poza zakresem")
+
     if cena is None:
-        return "Brak danych do wyceny", 404
+        return "Twoje okno jest za duże, skontaktuj się po indywidualną wycenę", 404
 
     return str(cena)
 
-# === FUNKCJE ===
+# === FUNKCJA WYCIĄGANIA CENY Z EXCELA Z WALIDACJĄ ZAKRESÓW ===
 def get_price_from_sheet_ceil(file_path, sheet_name, width, height):
     df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=2)
     width_row = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=1, nrows=1)
     width_values = width_row.values[0][3:-2]
     width_columns = df.columns[3:3 + len(width_values)]
     height_values = df.iloc[:, 2].dropna().unique()
+
+    min_width = int(min(width_values))
+    max_width = int(max(width_values))
+    min_height = int(min(height_values))
+    max_height = int(max(height_values))
+
+    if not (min_width <= width <= max_width) or not (min_height <= height <= max_height):
+        return f"Dla wybranego okna \"{sheet_name}\" dostępna szerokość to {min_width}–{max_width} mm, a wysokość {min_height}–{max_height} mm."
 
     width_candidates = width_values[width_values >= width]
     height_candidates = height_values[height_values >= height]
@@ -64,8 +76,13 @@ def get_price_from_sheet_ceil(file_path, sheet_name, width, height):
 
     row = df[df.iloc[:, 2] == chosen_height]
     price = row[column_name].values[0]
-    return None if pd.isna(price) else float(price)
-# === Checkboxy ===
+
+    if pd.isna(price) or price == "-" or price == "":
+        return None
+
+    return float(price)
+
+# === API DO DODATKÓW (CHECKBOXY) ===
 @app.route("/get-options", methods=["POST"])
 def get_options():
     data = request.get_json()
@@ -80,8 +97,11 @@ def get_options():
         print("Błąd dodatków:", e)
         return jsonify({"error": "Błąd przy pobieraniu dodatków"}), 500
 
-# === URUCHOM LOKALNIE ===
+# === URUCHOMIENIE APLIKACJI ===
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+   import os
+   port = int(os.environ.get("PORT", 5000))
+   app.run(host="0.0.0.0", port=port)
+# === URUCHOM LOKALNIE ===
+#if __name__ == "__main__":
+#    app.run(debug=True)
