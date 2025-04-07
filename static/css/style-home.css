@@ -38,7 +38,7 @@ html {
 .navbar {
     position: sticky;
     top: 0;
-    background-color: #999999;
+    background-color: #333;
     z-index: 1000;
     width: 100%;
   }
@@ -55,7 +55,7 @@ html {
   .logo {
     font-size: 2.2rem;
     font-weight: bold;
-    color: #333;
+    color: #FFF;
     flex: 1;
   }
   
@@ -71,7 +71,7 @@ html {
   .logo {
     font-size: 1.9rem;
     font-weight: bold;
-    color: #333;
+    color: #FFF;
   }
   
   /* Menu jako pełna szerokość */
@@ -87,8 +87,8 @@ html {
   
   .nav-links a {
     text-decoration: none;
-    color: #333;
-    font-size: 1.2rem;
+    color: #FFF;
+    font-size: 1.5rem;
     font-weight: bold;
     padding: 0.5rem 1rem;
     transition: all 0.3s ease;
@@ -298,6 +298,7 @@ html {
     cursor: pointer;
     transition: transform 0.3s ease;
     border: 1px solid #ccc;
+    object-fit: cover;  
   }
   
   .lang-switch img:hover {
@@ -311,7 +312,7 @@ html {
     padding: 0.5rem 1rem;
     border-radius: 8px;
     font-weight: bold;
-    color: #333;
+    color: #FFF;
     text-decoration: none;
     transition: background-color 0.3s;
   }
@@ -324,3 +325,114 @@ html {
     width: 20px;
     height: 20px;
   }
+  .hero-section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0;
+    transform: translateX(100px);
+    animation: slideInRight 1.5s forwards;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+  
+  .hero-title {
+    font-size: 3.2rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transform: translateX(-100px);
+    animation: slideInLeft 1.5s forwards;
+  }
+  
+  /* Animacje */
+  @keyframes slideInLeft {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideInRight {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+      text-align: center;
+    }
+  
+    .hero-content {
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+  }
+  /* Hamburger ikonka */
+.hamburger {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  z-index: 1001;
+}
+
+/* Mobile menu domyślnie ukryte */
+.nav-links {
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 64px;
+    right: 0;
+    background-color: #fff;
+    flex-direction: column;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    border-top: 1px solid #ccc;
+  }
+
+  .nav-links.show {
+    max-height: 500px; /* wystarczające na wszystkie linki */
+    opacity: 1;
+  }
+
+  .nav-links li {
+    padding: 1rem 0;
+    text-align: center;
+  }
+}

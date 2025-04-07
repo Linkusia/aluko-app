@@ -10,10 +10,13 @@
 
   <!-- Pasek nawigacyjny -->
   <header class="navbar">
+    <button class="hamburger" id="hamburger">
+      ☰
+    </button>
     <div class="container">
-      <h1 class="logo">TwojaFirma</h1>
+      <h1 class="logo">Aluko SC</h1>
       <nav class="navbar">
-        <ul class="nav-links">
+        <ul class="nav-links" id="nav-links">
           <!-- 🧮 Wycena -->
           <li class="quote-banner">
             <a href="{{ url_for('kalkulator') }}">
@@ -35,18 +38,14 @@
     </div>
   </header>
 
-  <!-- Sekcja slajdów -->
-  <section class="slideshow" id="home">
-    <div class="slide active">
-      <img src="{{ url_for('static', filename='img/slide1.jpg') }}" alt="Przykładowe zdjęcie 1" />
-    </div>
-    <div class="slide">
-      <img src="{{ url_for('static', filename='img/slide2.jpg') }}" alt="Przykładowe zdjęcie 2" />
-    </div>
-    <div class="slide">
-      <img src="{{ url_for('static', filename='img/slide3.jpg') }}" alt="Przykładowe zdjęcie 3" />
-    </div>
-  </section>
+
+<!-- Sekcja główna Hero -->
+<section class="hero-section" id="home">
+  <img src="{{ url_for('static', filename='img/FOTO.jpg') }}" alt="Nowoczesne okna" class="hero-bg" />
+  <div class="hero-content">
+    <h1 class="hero-title">Twoje nowe aluminiowe okna</h1>
+  </div>
+</section>
 
   <script src="{{ url_for('static', filename='js/script-home.js') }}"></script>
 
@@ -101,11 +100,11 @@
   <section id="kontakt" class="contact-section contact-dark">
     <div class="contact-container">
       <h2>Kontakt</h2>
-      <p>Zapraszamy do kontaktu telefonicznego lub mailowego:</p>
-
-      <p><strong>📞 Telefon:</strong> <a href="tel:+48123456789">+48 123 456 789</a></p>
-      <p><strong>✉️ E-mail:</strong> <a href="mailto:kontakt@twojafirma.pl">kontakt@twojafirma.pl</a></p>
-      <p><strong>🏢 Adres:</strong> ul. Przykładowa 12, 00-001 Miasto</p>
+      <p>Zapraszamy do kontaktu telefonicznego lub mailowego. Zobacz też naszą szybką wycenę.</p>
+      <p><strong></strong> ALUKO SC</p>
+      <p><strong>📞 Telefon:</strong> <a href="tel:+48123456789">+48 698 370 030</a></p>
+      <p><strong>✉️ E-mail:</strong> <a href="mailto:kontakt@aluko.pl">kontakt@alukopl</a></p>
+      <p><strong>🏢 Adres:</strong> ul. Fabryczna 10 budynek C1, 53-609 Wrocław</p>
       <p><strong>📍 Mapa:</strong> <a href="https://www.google.com/maps/place/Fabryczna+10C,+53-600+Wroc%C5%82aw/@51.1077255,16.9917496,17z/data=!3m1!4b1!4m6!3m5!1s0x470fc202a704b1b9:0x9748f206eb345439!8m2!3d51.1077222!4d16.9943245!16s%2Fg%2F11cpnbnmhb?entry=ttu" target="_blank">
         Zobacz lokalizację w Google Maps
       </a></p>
@@ -119,7 +118,7 @@
 
   <footer class="site-footer">
     <div class="footer-container">
-      <p>&copy; <span id="year"></span> Twoja Firma Ślusarska. Wszelkie prawa zastrzeżone.</p>
+      <p>&copy; <span id="year"></span> Aluko SC. Wszelkie prawa zastrzeżone.</p>
       <p><a href="#">Polityka prywatności</a></p>
     </div>
   </footer>

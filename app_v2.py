@@ -78,7 +78,7 @@ def get_price_from_sheet_ceil(file_path, sheet_name, width, height):
     price = row[column_name].values[0]
 
     if pd.isna(price) or price == "-" or price == "":
-        return None
+        return "Grześ powiedział, że złe proporcje."
 
     return float(price)
 

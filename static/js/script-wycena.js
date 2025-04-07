@@ -7,29 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let suma = 0;
     let grupaCounter = 0;
-    function pokazKomunikat(tresc, typ = "błąd") {
-        const div = document.getElementById("komunikat");
-        div.className = ""; // Reset klas
-        div.innerText = tresc;
-      
-        if (typ === "błąd") {
-          div.classList.add("komunikat-błąd");
-        }
-      
-        // Pokaż
-        div.classList.remove("komunikat-ukryty");
-      
-        // Schowaj po 5 sekundach
-        setTimeout(() => {
-            div.classList.add("komunikat-ukryty");
-        
-            // Po dodatkowych 0.5 sek – czyszczenie tekstu (gdy animacja się skończy)
-            setTimeout(() => {
-              div.innerText = "";
-              div.className = "komunikat-ukryty";
-            }, 1000);
-          }, 5000);
-        }
+
     function aktualizujSume() {
         const vat = suma * 0.23;
         const sumaZVat = suma + vat;
@@ -50,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     typSelect.addEventListener("change", async () => {
         const selected = typSelect.value;
-        const previewImg = document.getElementById("oknoPreview");
         const dodatkiBox = document.getElementById("dodatkiBox");
 
         previewImg.src = `/static/img/${selected}.png`;
@@ -98,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!response.ok) {
             const error = await response.text();
-            pokazKomunikat(error, "błąd");
+            alert(error);
             return;
         }
 
@@ -137,10 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
         dodatkiZaznaczone.forEach(d => {
             const cenaJedn = parseFloat(d.dataset.cena);
             const cenaDodatekTotal = cenaJedn * ilosc;
-          
+
             const dodatekTr = document.createElement("tr");
             dodatekTr.innerHTML = `
-                <td></td> <!-- pusta kolumna na numer -->
+                <td></td>
                 <td>➕ ${d.value}</td>
                 <td>-</td>
                 <td>-</td>
@@ -149,18 +126,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${cenaDodatekTotal.toFixed(2)}</td>
                 <td colspan="2">Dodatek</td>
             `;
-          
             dodatekTr.style.backgroundColor = kolorTla;
             dodatekTr.dataset.grupa = grupaId;
             tabelaBody.appendChild(dodatekTr);
-          
+
             suma += cenaDodatekTotal;
         });
 
         tr.querySelector(".usunBtn").addEventListener("click", () => {
             const rows = tabelaBody.querySelectorAll(`tr[data-grupa='${grupaId}']`);
-
             let sumaDoOdjecia = cenaLaczna;
+
             dodatkiZaznaczone.forEach(d => {
                 sumaDoOdjecia += parseFloat(d.dataset.cena) * ilosc;
             });
@@ -185,4 +161,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
     typSelect.dispatchEvent(new Event("change"));
 });
-
