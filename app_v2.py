@@ -21,13 +21,21 @@ FIRMA_NAZWA = "ALUKO SC"
 FIRMA_ADRES = "ul. Fabryczna 10\nWrocław"
 
 # === STRONY ===
-@app.route("/")
+@app.route('/')
 def home():
-    return render_template("home.html")
+    return render_template('home.html')
 
-@app.route("/wycena")
+@app.route('/en')
+def home_en():
+    return render_template('home_en.html')
+
+@app.route('/de')
+def home_de():
+    return render_template('home_de.html')
+
+@app.route('/wycena')
 def kalkulator():
-    return render_template("index.html")
+    return render_template('index.html')
 
 # === API DO CENY ===
 @app.route("/get-price", methods=["POST"])
@@ -40,14 +48,29 @@ def get_price():
     cena = get_price_from_sheet_ceil(EXCEL_PATH, typ, szerokosc, wysokosc)
 
     if isinstance(cena, str):
-        return cena, 400  # komunikat błędu (np. "poza zakresem")
+        return cena, 400
 
     if cena is None:
         return "Twoje okno jest za duże, skontaktuj się po indywidualną wycenę", 404
 
     return str(cena)
 
-# === FUNKCJA WYCIĄGANIA CENY Z EXCELA Z WALIDACJĄ ZAKRESÓW ===
+# === API DO DODATKÓW ===
+@app.route("/get-options", methods=["POST"])
+def get_options():
+    data = request.get_json()
+    typ = data.get("typ")
+
+    try:
+        df = pd.read_excel(EXCEL_PATH, sheet_name=typ, engine="openpyxl", usecols="A:B", skiprows=29, nrows=4)
+        df.columns = ["nazwa", "cena"]
+        dodatki = df.to_dict(orient="records")
+        return jsonify(dodatki)
+    except Exception as e:
+        print("Błąd dodatków:", e)
+        return jsonify({"error": "Błąd przy pobieraniu dodatków"}), 500
+
+# === FUNKCJA CENOWA ===
 def get_price_from_sheet_ceil(file_path, sheet_name, width, height):
     df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=2)
     width_row = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=1, nrows=1)
@@ -82,26 +105,7 @@ def get_price_from_sheet_ceil(file_path, sheet_name, width, height):
 
     return float(price)
 
-# === API DO DODATKÓW (CHECKBOXY) ===
-@app.route("/get-options", methods=["POST"])
-def get_options():
-    data = request.get_json()
-    typ = data.get("typ")
-
-    try:
-        df = pd.read_excel(EXCEL_PATH, sheet_name=typ, engine="openpyxl", usecols="A:B", skiprows=29, nrows=4)
-        df.columns = ["nazwa", "cena"]
-        dodatki = df.to_dict(orient="records")
-        return jsonify(dodatki)
-    except Exception as e:
-        print("Błąd dodatków:", e)
-        return jsonify({"error": "Błąd przy pobieraniu dodatków"}), 500
-
 # === URUCHOMIENIE APLIKACJI ===
 if __name__ == "__main__":
-   import os
-   port = int(os.environ.get("PORT", 5000))
-   app.run(host="0.0.0.0", port=port)
-# === URUCHOM LOKALNIE ===
-#if __name__ == "__main__":
-#    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host="0.0.0.0", port=port)
