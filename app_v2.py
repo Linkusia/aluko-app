@@ -5,6 +5,7 @@ import smtplib
 from email.message import EmailMessage
 import pandas as pd
 import os
+from pdf_generator import generate_offer_pdf
 
 app = Flask(__name__)
 
@@ -69,7 +70,35 @@ def get_options():
     except Exception as e:
         print("Błąd dodatków:", e)
         return jsonify({"error": "Błąd przy pobieraniu dodatków"}), 500
+# === API DO WYSYŁKI PDF ===
+@app.route("/send-offer", methods=["POST"])
+def send_offer():
+    data = request.get_json()
 
+    try:
+        pdf_path = generate_offer_pdf(data, output_path="oferta_temp.pdf")
+
+        # przygotuj maila
+        msg = EmailMessage()
+        msg["Subject"] = "Twoja oferta od ALUKO SC"
+        msg["From"] = SMTP_EMAIL
+        msg["To"] = data['email']
+        msg.set_content(f"Cześć {data['imie']},\n\nW załączeniu znajdziesz ofertę przygotowaną na podstawie Twoich danych.\n\nPozdrawiamy!\nZespół ALUKO SC")
+
+        with open(pdf_path, "rb") as f:
+            file_data = f.read()
+            msg.add_attachment(file_data, maintype="application", subtype="pdf", filename="Oferta_ALUKO.pdf")
+
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_EMAIL, SMTP_HASLO)
+            server.send_message(msg)
+
+        return "Oferta wysłana!", 200
+
+    except Exception as e:
+        print("Błąd przy wysyłce oferty:", e)
+        return "Błąd przy wysyłce oferty.", 500
 # === FUNKCJA CENOWA ===
 def get_price_from_sheet_ceil(file_path, sheet_name, width, height):
     df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=2)

@@ -161,3 +161,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
     typSelect.dispatchEvent(new Event("change"));
 });
+document.getElementById("wyslijOferteBtn").addEventListener("click", async () => {
+    const imie = document.getElementById("imie").value;
+    const nazwisko = document.getElementById("nazwisko").value;
+    const email = document.getElementById("email").value;
+    const typ = document.getElementById("typ").value;
+
+    const szerokosc = document.getElementById("szerokosc").value;
+    const wysokosc = document.getElementById("wysokosc").value;
+
+    const dodatki = [];
+    document.querySelectorAll(".dodatek-checkbox:checked").forEach(el => {
+        const label = el.closest("label");
+        const cena = label.dataset.cena;
+        dodatki.push({ nazwa: el.value, cena });
+    });
+
+    const podsumowanie = document.getElementById("sumaWyceny").innerText;
+    const rows = document.querySelectorAll("#zestawienie tbody tr");
+    const pozycje = [];
+    let currentPozycja = null;
+    
+    rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        const isDodatek = cells[1].textContent.includes("➕");
+    
+        if (!isDodatek) {
+            // nowa główna pozycja
+            currentPozycja = {
+                typ: cells[1].textContent.trim(),
+                szerokosc: cells[2].textContent.trim(),
+                wysokosc: cells[3].textContent.trim(),
+                ilosc: parseInt(cells[4].textContent.trim()),
+                cenaJednostkowa: parseFloat(cells[5].textContent.trim()),
+                cenaLaczna: parseFloat(cells[6].textContent.trim()),
+                dodatki: []
+            };
+            pozycje.push(currentPozycja);
+        } else if (currentPozycja) {
+            // dodatek podpięty do ostatniej pozycji
+            currentPozycja.dodatki.push({
+                nazwa: cells[1].textContent.replace("➕", "").trim(),
+                cenaJednostkowa: parseFloat(cells[5].textContent.trim()),
+                cenaLaczna: parseFloat(cells[6].textContent.trim())
+            });
+        }
+    });
+    const response = await fetch("/send-offer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            imie, nazwisko, email,
+            pozycje,
+            podsumowanie,
+        })
+    });
+    const mailStatus = document.getElementById("mailStatus");
+
+    if (response.ok) {
+        mailStatus.textContent = "📨 Oferta została wysłana!";
+    } else {
+        const error = await response.text();
+        mailStatus.textContent = "❌ Błąd: " + error;
+    }
+});
